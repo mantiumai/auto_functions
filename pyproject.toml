@@ -9,7 +9,6 @@ root_package = "auto_functions"
 [[tool.importlinter.contracts]]
 layers = [
   "auto_functions.tasks",  # Invoke tasks
-  "auto_functions.services",  # API service modules
   "auto_functions.common",  # Common service utilities
   "auto_functions.logger",  # Logging module
 ]

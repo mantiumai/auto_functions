@@ -1,15 +1,39 @@
 import time
 from http import HTTPStatus
-from typing import Any, Awaitable, Callable
+from typing import Awaitable, Callable
 
 from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.cors import CORSMiddleware
 
-from auto_functions.common.context import bind_context_from_headers, set_headers_from_context
+from auto_functions.context import bind_context_from_headers, set_headers_from_context
 from auto_functions.logger import get_logger
 
+app = FastAPI(
+    title="Auto Functions API",
+    description="Use OpenAPI specs to automatically generate OpenAI function tool parameters",
+    version="0.1.0",
+)
 
+# TODO: Initialize telemetry and segment and JWT validation
+# TODO: Connect to metadata database
+# TODO: Configure OAuth
+
+# TODO: Disconnect from metadata database
+
+# Add CORS middleware
+cors_kwargs = dict(
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+    expose_headers=["X-Mantium-Request-Id", "X-Mantium-Debug-Logging"],
+)
+
+app.add_middleware(CORSMiddleware, **cors_kwargs)
+
+
+# Add logging and exception handling middleware
 async def log_request(request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
     """Log a request"""
     user_agent = request.headers.get("user-agent", "UNKNOWN")
@@ -45,45 +69,13 @@ async def log_request(request: Request, call_next: Callable[[Request], Awaitable
     return response
 
 
+app.add_middleware(BaseHTTPMiddleware, dispatch=log_request)
+
+
+# Add standard routes
 def health_check() -> str:
     """Verify that the app is running."""
     return "OK"
 
 
-def create_app(**kwargs: Any) -> FastAPI:
-    """Create and configure a FastAPI application for a microservice"""
-
-    app = FastAPI(
-        title=kwargs.pop("title"),
-        description=kwargs.pop("description"),
-        version=kwargs.pop("version", "0.1.0"),
-        **kwargs,
-    )
-
-    # TODO: Initialize telemetry and segment and JWT validation
-    # TODO: Connect to metadata database
-    # TODO: Configure OAuth
-
-    # TODO: Disconnect from metadata database
-
-    # Add CORS middleware
-    cors_kwargs = dict(
-        allow_origins=["*"],
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-        expose_headers=["X-Mantium-Request-Id", "X-Mantium-Debug-Logging"],
-    )
-
-    app.add_middleware(CORSMiddleware, **cors_kwargs)
-
-    # Add logging and exception handling middleware
-    app.add_middleware(BaseHTTPMiddleware, dispatch=log_request)
-
-    # Add standard routes
-    app.get("/health-check", summary="Verify that the service is running", status_code=HTTPStatus.OK)(health_check)
-
-    return app
-
-
-__all__ = ["create_app"]
+app.get("/health-check", summary="Verify that the service is running", status_code=HTTPStatus.OK)(health_check)
