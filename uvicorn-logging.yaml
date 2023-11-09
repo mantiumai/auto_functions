@@ -1,0 +1,16 @@
+version: 1
+disable_existing_loggers: false
+handlers:
+  default:
+    class: logging.StreamHandler
+    formatter: json
+    level: DEBUG
+    stream: ext://sys.stdout
+formatters:
+  json:
+    (): pythonjsonlogger.jsonlogger.JsonFormatter
+loggers:
+  '':
+    handlers: [default]
+    level: WARNING
+    propagate: false

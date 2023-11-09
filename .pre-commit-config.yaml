@@ -1,0 +1,58 @@
+# pyright..................................................................Passed
+
+repos:
+- repo: https://github.com/python-poetry/poetry
+  rev: 1.7.0
+  hooks:
+  - id: poetry-check
+    name: poetry check
+  - id: poetry-lock
+    name: poetry lock --no-update
+    args: [--no-update]
+- repo: https://github.com/jumanjihouse/pre-commit-hooks
+  rev: 3.0.0
+  hooks:
+  - id: shellcheck
+    name: check sh
+  - id: shfmt
+    name: format sh
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0
+  hooks:
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: check-merge-conflict
+  - id: check-json
+  - id: check-toml
+  - id: check-yaml
+    args: [--unsafe]
+  - id: pretty-format-json
+    name: format json
+    args:
+    - --no-ensure-ascii
+    - --autofix
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.11.0
+  hooks:
+  - id: pretty-format-toml
+    name: format toml
+    args:
+    - --autofix
+    - --trailing-commas
+  - id: pretty-format-yaml
+    name: format yaml
+    args: [--autofix]
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.1.5
+  hooks:
+  - id: ruff
+    args: [--fix]
+  - id: ruff-format
+- repo: https://github.com/seddonym/import-linter
+  rev: v1.12.1
+  hooks:
+  - id: import-linter
+- repo: https://github.com/RobertCraigie/pyright-python
+  rev: v1.1.335
+  hooks:
+  - id: pyright

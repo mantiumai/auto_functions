@@ -1,0 +1,68 @@
+[build-system]
+build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core"]
+
+[tool.importlinter]
+include_external_packages = true
+root_package = "auto_functions"
+
+[[tool.importlinter.contracts]]
+layers = [
+  "auto_functions.tasks",  # Invoke tasks
+  "auto_functions.services",  # API service modules
+  "auto_functions.common",  # Common service utilities
+  "auto_functions.logger",  # Logging module
+]
+name = "Architecture Layers"
+type = "layers"
+
+[tool.poetry]
+authors = ["John Bledsoe <john.bledsoe@mantiumai.com>"]
+description = "Sample FastAPI application"
+license = "MIT"
+name = "auto_functions"
+readme = "README.md"
+version = "0.1.0"
+
+[tool.poetry.dependencies]
+aiohttp = "^3.9.0b1"
+fastapi = "^0.104.1"
+langchain = "^0.0.333"
+pydantic-settings = "^2.0.3"
+python = "^3.11"
+python-json-logger = "^2.0.7"
+structlog = "^23.2.0"
+uvicorn = {version = "^0.24.0.post1", extras = ["standard"]}
+
+[tool.poetry.group.dev.dependencies]
+httpx = "^0.25.1"
+pre-commit = "^3.5.0"
+pyright = "^1.1.335"
+pytest = "^7.4.3"
+pytest-asyncio = "^0.21.1"
+pytest-mock = "^3.12.0"
+
+[tool.pyright]  # Also requires `export PYRIGHT_PYTHON_GLOBAL_NODE=False` in shell config
+ignore = ["tests"]
+pythonVersion = "3.12"
+reportImplicitOverride = true
+typeCheckingMode = "strict"
+venv = "auto_functions"
+venvPath = "../../.pyenv/versions"
+
+[tool.pytest.ini_options]
+addopts = "--tb=short"
+asyncio_mode = "auto"
+filterwarnings = ["error"]
+testpaths = ["tests"]
+xfail_strict = true
+
+[tool.ruff]
+line-length = 120
+output-format = "grouped"
+target-version = "py312"
+
+[tool.ruff.lint]
+ignore = []
+ignore-init-module-imports = true
+select = ["E", "F", "B", "SIM", "I", "Q"]
