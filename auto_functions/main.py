@@ -2,11 +2,13 @@ import time
 from http import HTTPStatus
 from typing import Awaitable, Callable
 
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request, Response
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.cors import CORSMiddleware
 
 from auto_functions.context import bind_context_from_headers, set_headers_from_context
+from auto_functions.database import create_tables
 from auto_functions.logger import get_logger
 from auto_functions.routes.api_specs.api_specs import api_spec_router
 
@@ -15,6 +17,10 @@ app = FastAPI(
     description="Use OpenAPI specs to automatically generate OpenAI function tool parameters",
     version="0.1.0",
 )
+
+app.add_event_handler("startup", create_tables)  # type: ignore
+
+load_dotenv()
 
 app.include_router(api_spec_router)
 
